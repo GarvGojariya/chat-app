@@ -2,7 +2,9 @@ import { Box, Divider, IconButton, Menu, MenuItem, Typography } from '@mui/mater
 import React, { useState } from 'react'
 import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
 import { useFirebase } from '../context/Services';
-const SideBar = () => {
+import Search from './Search';
+import Chats from './Chats';
+const Sidebar = () => {
     const firebase = useFirebase()
     const [anchorEl, setAnchorEl] = useState('')
     const open = Boolean(anchorEl);
@@ -14,7 +16,7 @@ const SideBar = () => {
     };
     return (
         <>
-            <Box sx={{ width: 1 / 6, display: 'grid', height: '100vh', bgcolor: '#141414', p: 1, alignContent: 'start' }}>
+            <Box sx={{ width:1/6, display: 'grid', height: '100vh', bgcolor:'#141414', p: 1,alignContent:'start'}}>
                 <Box sx={{ display: 'flex', width: '100%', maxWidth: '100%', maxHeight: '100%', height: 'fit-content', alignItems: 'center', placeContent: 'space-between' }}>
                     <Typography sx={{ height: '100%', color: 'white' }}>
                         Chats
@@ -37,14 +39,15 @@ const SideBar = () => {
                     >
                         <MenuItem onClick={handleClose}>Profile</MenuItem>
                         <MenuItem onClick={handleClose}>My account</MenuItem>
-                        <MenuItem onClick={()=>{firebase.logOut()}}>Logout</MenuItem>
+                        <MenuItem onClick={() => { firebase.logOut() }}>Logout</MenuItem>
                     </Menu>
                 </Box>
                 <Divider sx={{ color: '#666', borderTop: 1 }} />
-
+                <Search/>
+                <Chats/>
             </Box>
         </>
     )
 }
 
-export default SideBar
+export default Sidebar

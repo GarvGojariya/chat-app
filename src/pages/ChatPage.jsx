@@ -1,12 +1,12 @@
 import React from 'react'
-import SideBar from '../components/SideBar'
 import { useFirebase } from '../context/Services'
+import Sidebar from '../components/Sidebar'
 
 const ChatPage = () => {
     const firebase = useFirebase()
     return (
         <>
-            <SideBar />
+            <Sidebar />
 
         </>
     )

@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Container, CssBaseline, Grid, Link, TextField, Typography } from '@mui/material'
+import { Avatar, Box, Button, Container, CssBaseline, Grid, Input, Link, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { images } from '../assets/images';
@@ -8,20 +8,24 @@ import { useNavigate } from 'react-router-dom';
 const RegisterPage = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [name, setName] = useState('')
-    const [image, setImage] = useState('')
+    const [displayName, setDisplayName] = useState('')
+    const [image, setImage] = useState([])
 
     const firebase = useFirebase()
     const navigate = useNavigate()
 
     const handleSignUp = (e) => {
         e.preventDefault()
-        firebase.registerWithEmailAndPassword(email, password, name, image)
+        firebase.registerWithEmailAndPassword(email, password, displayName, image)
         setEmail('')
         setPassword('')
-        setName('')
+        setDisplayName('')
         setImage('')
 
+    }
+    const onFileChange = e => {
+        setImage(e.target.files[0]);
+        e.preventDefault();
     }
     useEffect(() => {
         if (firebase.isLoggedIn) {
@@ -47,17 +51,17 @@ const RegisterPage = () => {
                         <Typography component="h1" variant="h5">
                             Sign up
                         </Typography>
-                        <Box component="form" noValidate onSubmit={handleSignUp} sx={{ mt: 3, display: 'grid' }}>
+                        <Box component="form" noValidate sx={{ mt: 3, display: 'grid' }}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12} sm={6}>
-                                <TextField
+                                    <TextField
                                         required
                                         fullWidth
                                         id="name"
                                         label="name"
                                         name="name"
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)}
+                                        value={displayName}
+                                        onChange={(e) => setDisplayName(e.target.value)}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
@@ -86,14 +90,13 @@ const RegisterPage = () => {
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <TextField
+                                    <Input
                                         required
                                         fullWidth
                                         id="userimage"
                                         label="image"
                                         type='file'
-                                        value={image}
-                                        onChange={(e) => setImage(e.target.value)}
+                                        onChange={onFileChange}
                                     />
                                 </Grid>
                             </Grid>
@@ -101,6 +104,7 @@ const RegisterPage = () => {
                                 type="submit"
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2, placeSelf: 'center' }}
+                                onClick={handleSignUp}
                             >
                                 Sign Up
                             </Button>
