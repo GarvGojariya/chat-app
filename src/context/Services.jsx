@@ -3,9 +3,10 @@ import { createContext } from "react";
 import { initializeApp } from 'firebase/app';
 import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { getFirestore, collection, addDoc, getDocs, query, setDoc, doc, where, serverTimestamp, getDoc, updateDoc, onSnapshot, orderBy, } from "firebase/firestore";
+import { getFirestore, collection, addDoc, getDocs, query, setDoc, doc, where, serverTimestamp, getDoc, updateDoc, onSnapshot, orderBy, arrayUnion, Timestamp, } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL, getStorage } from "firebase/storage";
-
+import { ChatContext } from "./ChatContext";
+import { v4 as uuid } from "uuid";
 
 // create context
 const AppContext = createContext(null)
@@ -32,12 +33,9 @@ export const useFirebase = () => useContext(AppContext)
 export const AppProvider = (props) => {
     const [user, setUser] = useState(null)
     const [chatUser, setChatUser] = useState(null)
-    const [err, setErr] = useState(false);
-    const [loading, setLoading] = useState(false);
     const [currentUser, setCurrentUser] = useState('')
-    const [username, setUsername] = useState("");
-    const [chat, setChat] = useState([])
     const navigate = useNavigate()
+    // const { data } = useContext(ChatContext);
     //firebase authentication 
     useEffect(() => {
         const unsub = onAuthStateChanged(firebaseAuth, (user) => {
@@ -68,7 +66,7 @@ export const AppProvider = (props) => {
                     email: userCredential.user.email,
                     photoURL: downloadUrl,
                 });
-                await setDoc(doc(firestore, "userChats", userCredential.user.displayName), { });
+                await setDoc(doc(firestore, "userChats", userCredential.user.displayName), {});
             })
         } catch (error) {
             console.error("Error during registration:", error);
@@ -135,16 +133,29 @@ export const AppProvider = (props) => {
         const id = currentUser.displayName
         try {
             // const q = query(doc(firestore, 'userChats',id),orderBy('timestamp','asc'))
-            const snapshot = await getDoc(doc(firestore, 'userChats',id));
+            const snapshot = await getDoc(doc(firestore, 'userChats', id));
             const chatsData = snapshot.data()
-            return chatsData || []; 
+            return chatsData || [];
         } catch (error) {
             console.error('Error getting chats:', error);
             return [];
         }
     };
+
+    // const sendMessage = async (message) => {
+    //     await updateDoc(doc(firestore, 'chats', data.chatId),
+    //         {
+    //             messages: arrayUnion({
+    //                 id: uuid(),
+    //                 message,
+    //                 senderId: currentUser.uid,
+    //                 date: Timestamp.now(),
+    //             }),
+    //         }
+    //     )
+    // }
     return (
-        <AppContext.Provider value={{ registerWithEmailAndPassword, getChats, chatUser, findUser, selectUser, loginWithEmailAndPassword, logOut, isLoggedIn, user, currentUser }}>
+        <AppContext.Provider value={{ registerWithEmailAndPassword, getChats,chatUser, findUser, selectUser, loginWithEmailAndPassword, logOut, isLoggedIn, user, currentUser }}>
             {props.children}
         </AppContext.Provider>
     );
