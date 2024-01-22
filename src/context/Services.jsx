@@ -33,7 +33,7 @@ export const AppProvider = (props) => {
 
     const [chatUser, setChatUser] = useState(null)
     const [currentUser, setCurrentUser] = useState('')
-    const [contextData, setContextData] = useState({chatId: '', user: {}})
+    const [contextData, setContextData] = useState({ chatId: '', user: {} })
     const navigate = useNavigate()
     // const chatContext = useChatContext()
     // const data = chatContext.data
@@ -155,7 +155,7 @@ export const AppProvider = (props) => {
             [contextData.chatId + ".date"]: serverTimestamp(),
         });
 
-        await updateDoc(doc(firestore, "userChats", contextData.displayName), {
+        await updateDoc(doc(firestore, "userChats", contextData.user.displayName    ), {
             [contextData.chatId + ".lastMessage"]: {
                 message,
             },
@@ -168,17 +168,25 @@ export const AppProvider = (props) => {
             currentUser && currentUser.uid > userInfo.uid
                 ? currentUser.uid + userInfo.uid
                 : userInfo.uid + (currentUser ? currentUser.uid : '');
-
         const data = {
             user: userInfo,
             chatId,
         };
-        console.log('hello', userInfo)
         setContextData(data);
     };
-
+console.log(contextData)
+    const getMessage = async() =>{
+        try {
+            const snapshot = await getDoc(doc(firestore, 'chats', contextData.chatId));
+            const messageData = snapshot.data()
+            return messageData || [];
+        } catch (error) {
+            console.error('Error getting messages:', error);
+            return [];
+        }
+    }
     return (
-        <AppContext.Provider value={{ registerWithEmailAndPassword, handleUserChange,sendMessage, getChats, chatUser, findUser, selectUser, loginWithEmailAndPassword, logOut, isLoggedIn, currentUser }}>
+        <AppContext.Provider value={{ registerWithEmailAndPassword, getMessage,contextData,handleUserChange, sendMessage, getChats, chatUser, findUser, selectUser, loginWithEmailAndPassword, logOut, isLoggedIn, currentUser }}>
             {props.children}
         </AppContext.Provider>
     );

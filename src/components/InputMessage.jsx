@@ -11,9 +11,9 @@ const InputMessage = () => {
     }
     return (
         <>
-            <Box sx={{ display: 'flex',width:'100%' }}>
+            <Box sx={{ display: 'flex',width:'100%',position:'absolute',bottom:0,position:'relative' }}>
                 <Input placeholder='enter message to send' value={message} onChange={(e)=>setMessage(e.target.value)}
-                sx={{width:'100%'}} />
+                sx={{width:'100%'}} onKeyDown={e => e.key === 'Enter' ? handleSend() : ''} />
                 <IconButton onClick={handleSend} >
                     <SendIcon  />
                 </IconButton>

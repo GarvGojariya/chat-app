@@ -1,4 +1,4 @@
-import { Box, Divider, IconButton, Menu, MenuItem, Typography } from '@mui/material'
+import { Avatar, Box, Divider, IconButton, Menu, MenuItem, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
 import { useFirebase } from '../context/Services';
@@ -11,23 +11,27 @@ const Sidebar = () => {
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
+    const currentUser = firebase.currentUser
     const handleClose = () => {
         setAnchorEl(null);
     };
     return (
         <>
-            <Box sx={{ width:1/6, display: 'grid', height: '100vh', bgcolor:'#141414', p: 1,alignContent:'start'}}>
+            <Box sx={{ width: 1 / 6, display: 'grid', height: '100vh', bgcolor: '#141414', p: 1, alignContent: 'start' }}>
                 <Box sx={{ display: 'flex', width: '100%', maxWidth: '100%', maxHeight: '100%', height: 'fit-content', alignItems: 'center', placeContent: 'space-between' }}>
                     <Typography sx={{ height: '100%', color: 'white' }}>
                         Chats
                     </Typography>
-                    <IconButton>
-                        <MoreVertOutlinedIcon sx={{ color: 'white' }}
-                            aria-controls={open ? 'basic-menu' : undefined}
-                            aria-haspopup="true"
-                            aria-expanded={open ? 'true' : undefined}
-                            onClick={handleClick} />
-                    </IconButton>
+                    <Box sx={{display:'flex', alignItems:'center'}}>
+                        <Avatar src={currentUser.photoURL} sx={{ height: '28px', width: '28px' }} />
+                        <IconButton>
+                            <MoreVertOutlinedIcon sx={{ color: 'white', height: '28px', width: '28px' }}
+                                aria-controls={open ? 'basic-menu' : undefined}
+                                aria-haspopup="true"
+                                aria-expanded={open ? 'true' : undefined}
+                                onClick={handleClick} />
+                        </IconButton>
+                    </Box>
                     <Menu
                         id="basic-menu"
                         anchorEl={anchorEl}
@@ -43,8 +47,8 @@ const Sidebar = () => {
                     </Menu>
                 </Box>
                 <Divider sx={{ color: '#666', borderTop: 1 }} />
-                <Search/>
-                <Chats/>
+                <Search />
+                <Chats />
             </Box>
         </>
     )

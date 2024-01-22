@@ -15,7 +15,7 @@ const Chats = () => {
     }, [currentUser.uid]);
 
     const handleSelect = (userInfo) => {
-       firebase.handleUserChange(userInfo)
+        firebase.handleUserChange(userInfo)
     };
     return (
         <>
@@ -23,7 +23,7 @@ const Chats = () => {
                 {Object.values(chats).map((c) => (
                     <Box
                         key={c.date}
-                        sx={{ display: 'flex', alignItems: 'center', borderBottom: 1, borderColor: '#666', p: 1, gap: 2 }}
+                        sx={{ display: 'flex', alignItems: 'center', borderBottom: 1, borderColor: '#666', p: 1, gap: 2, cursor: 'pointer' }}
                         onClick={() => handleSelect(c.userInfo)}>
                         <Avatar src={c.userInfo.photoURL} />
                         <Typography sx={{ color: 'white' }}>
