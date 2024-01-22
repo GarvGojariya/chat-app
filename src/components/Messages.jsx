@@ -10,14 +10,10 @@ const Messages = () => {
     useEffect(() => {
         firebase.getMessage().then((msgs) => setMessageList(msgs));
     }, [data.chatId, messageList])
-    // console.log(messageList)
     return (
         <>
             {Object.values(messageList).map((m) =>
-                <div>
-                    <Message msg={m} key={m.id} />
-                    {/* {console.log(msg)} */}
-                </div>
+                <Message msg={m} key={m.id} />
             )
             }
         </>

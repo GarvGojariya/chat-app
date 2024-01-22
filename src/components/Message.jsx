@@ -1,28 +1,23 @@
 import { Avatar, Box, Typography } from '@mui/material';
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { useFirebase } from '../context/Services';
 
 const Message = ({ msg }) => {
-  const ref = useRef();
   const firebase = useFirebase();
   const currentUser = firebase.currentUser;
   const data = firebase.contextData;
 
-  useEffect(() => {
-    // Scroll to the bottom when a new message is received or sent
-    ref.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-  }, [msg]);
+
 
   return (
     <>
       <Box
-        ref={ref}
         sx={{
           display: 'flex',
           flexDirection: 'column',
           rowGap: 2,
           overflow: 'auto',
-          height: '85vh',
+          height: '87vh',
         }}
       >
         {msg.map((ms, index) => (
@@ -40,11 +35,11 @@ const Message = ({ msg }) => {
                 alignItems: 'center',
                 borderBottomLeftRadius: '12px',
                 borderBottomRightRadius: '12px',
-                borderTopLeftRadius: '12px',
+                borderTopLeftRadius: '12px',width:'fit-content',maxWidth:'80%' 
               }}
             >
               <Box sx={{ display: 'grid' }}>
-                <Typography sx={{ color: 'white', fontSize: '16px' }}>
+                <Typography sx={{ color: 'white', fontSize: '16px'}}>
                   {ms.message}
                 </Typography>
               </Box>
@@ -71,7 +66,7 @@ const Message = ({ msg }) => {
                 gap: 1,
                 borderBottomLeftRadius: '12px',
                 borderBottomRightRadius: '12px',
-                borderTopRightRadius: '12px',
+                borderTopRightRadius: '12px',width:'fit-content',maxWidth:'80%' 
               }}
             >
               <Avatar

@@ -91,10 +91,7 @@ export const AppProvider = (props) => {
         } catch (err) {
             console.log('error')
         }
-
     }
-
-
     const selectUser = async () => {
         const combinedId =
             currentUser.uid > chatUser.uid
@@ -147,15 +144,13 @@ export const AppProvider = (props) => {
                 date: Timestamp.now(),
             }),
         });
-
         await updateDoc(doc(firestore, "userChats", currentUser.displayName), {
             [contextData.chatId + ".lastMessage"]: {
                 message,
             },
             [contextData.chatId + ".date"]: serverTimestamp(),
         });
-
-        await updateDoc(doc(firestore, "userChats", contextData.user.displayName    ), {
+        await updateDoc(doc(firestore, "userChats", contextData.user.displayName), {
             [contextData.chatId + ".lastMessage"]: {
                 message,
             },
@@ -174,8 +169,7 @@ export const AppProvider = (props) => {
         };
         setContextData(data);
     };
-console.log(contextData)
-    const getMessage = async() =>{
+    const getMessage = async () => {
         try {
             const snapshot = await getDoc(doc(firestore, 'chats', contextData.chatId));
             const messageData = snapshot.data()
@@ -186,7 +180,7 @@ console.log(contextData)
         }
     }
     return (
-        <AppContext.Provider value={{ registerWithEmailAndPassword, getMessage,contextData,handleUserChange, sendMessage, getChats, chatUser, findUser, selectUser, loginWithEmailAndPassword, logOut, isLoggedIn, currentUser }}>
+        <AppContext.Provider value={{ registerWithEmailAndPassword, getMessage, contextData, handleUserChange, sendMessage, getChats, chatUser, findUser, selectUser, loginWithEmailAndPassword, logOut, isLoggedIn, currentUser }}>
             {props.children}
         </AppContext.Provider>
     );
