@@ -11,10 +11,11 @@ const InputMessage = () => {
     }
     return (
         <>
-            <Box sx={{ display: 'flex' }}>
-                <Input placeholder='enter message to send' value={message} onChange={(e)=>setMessage(e.target.value)} />
-                <IconButton onClick={handleSend}>
-                    <SendIcon />
+            <Box sx={{ display: 'flex',width:'100%' }}>
+                <Input placeholder='enter message to send' value={message} onChange={(e)=>setMessage(e.target.value)}
+                sx={{width:'100%'}} />
+                <IconButton onClick={handleSend} >
+                    <SendIcon  />
                 </IconButton>
             </Box>
         </>

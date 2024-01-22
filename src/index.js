@@ -5,19 +5,16 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { AppProvider } from './context/Services';
 import { BrowserRouter } from 'react-router-dom';
-import { ChatContextProvider } from './context/ChatContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <AppProvider>
-        <ChatContextProvider>
-          <App />
-        </ChatContextProvider>
-      </AppProvider>
-    </BrowserRouter>
-  </React.StrictMode>
+  <BrowserRouter>
+    <AppProvider>
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    </AppProvider>
+  </BrowserRouter>
 );
 
 // If you want to start measuring performance in your app, pass a function

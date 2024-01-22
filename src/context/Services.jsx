@@ -3,9 +3,8 @@ import { createContext } from "react";
 import { initializeApp } from 'firebase/app';
 import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { getFirestore, collection, addDoc, getDocs, query, setDoc, doc, where, serverTimestamp, getDoc, updateDoc, onSnapshot, orderBy, arrayUnion, Timestamp, } from "firebase/firestore";
+import { getFirestore, collection, getDocs, query, setDoc, doc, where, serverTimestamp, getDoc, updateDoc, arrayUnion, Timestamp, } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL, getStorage } from "firebase/storage";
-import { ChatContext } from "./ChatContext";
 import { v4 as uuid } from "uuid";
 
 // create context
@@ -31,23 +30,25 @@ export const useFirebase = () => useContext(AppContext)
 // create provider
 
 export const AppProvider = (props) => {
-    const [user, setUser] = useState(null)
+
     const [chatUser, setChatUser] = useState(null)
     const [currentUser, setCurrentUser] = useState('')
+    const [contextData, setContextData] = useState({chatId: '', user: {}})
     const navigate = useNavigate()
-    // const { data } = useContext(ChatContext);
+    // const chatContext = useChatContext()
+    // const data = chatContext.data
+
+
     //firebase authentication 
     useEffect(() => {
         const unsub = onAuthStateChanged(firebaseAuth, (user) => {
             setCurrentUser(user);
         });
+        console.log(currentUser)
         return () => {
             unsub();
         };
     }, []);
-
-
-
     const isLoggedIn = currentUser ? true : false;
     const registerWithEmailAndPassword = async (email, password, displayName, image) => {
         try {
@@ -85,7 +86,6 @@ export const AppProvider = (props) => {
             const querySnapshot = await getDocs(q);
             querySnapshot.forEach((doc) => {
                 setChatUser(doc.data());
-                console.log(chatUser)
                 return chatUser
             });
         } catch (err) {
@@ -94,6 +94,7 @@ export const AppProvider = (props) => {
 
     }
 
+
     const selectUser = async () => {
         const combinedId =
             currentUser.uid > chatUser.uid
@@ -101,11 +102,9 @@ export const AppProvider = (props) => {
                 : chatUser.uid + currentUser.uid;
         try {
             const res = await getDoc(doc(firestore, "chats", combinedId));
-
             if (!res.exists()) {
                 // Create a chat in the "chats" collection
                 await setDoc(doc(firestore, "chats", combinedId), { messages: [] });
-
                 // Update "userChats" for the current user
                 await updateDoc(doc(firestore, "userChats", currentUser.displayName), {
                     [combinedId + ".userInfo"]: {
@@ -114,7 +113,6 @@ export const AppProvider = (props) => {
                         photoURL: chatUser.photoURL,
                     }
                 });
-
                 // Update "userChats" for the other user
                 await updateDoc(doc(firestore, "userChats", chatUser.displayName), {
                     [combinedId + ".userInfo"]: {
@@ -126,13 +124,11 @@ export const AppProvider = (props) => {
             }
         } catch (error) {
             console.error("Error during chat creation:", error);
-            // Handle the error or log it for debugging purposes
         }
     };
     const getChats = async () => {
         const id = currentUser.displayName
         try {
-            // const q = query(doc(firestore, 'userChats',id),orderBy('timestamp','asc'))
             const snapshot = await getDoc(doc(firestore, 'userChats', id));
             const chatsData = snapshot.data()
             return chatsData || [];
@@ -141,21 +137,48 @@ export const AppProvider = (props) => {
             return [];
         }
     };
+    // console.log(data)
+    const sendMessage = async (message) => {
+        await updateDoc(doc(firestore, "chats", contextData.chatId), {
+            messages: arrayUnion({
+                id: uuid(),
+                message,
+                senderId: currentUser.uid,
+                date: Timestamp.now(),
+            }),
+        });
 
-    // const sendMessage = async (message) => {
-    //     await updateDoc(doc(firestore, 'chats', data.chatId),
-    //         {
-    //             messages: arrayUnion({
-    //                 id: uuid(),
-    //                 message,
-    //                 senderId: currentUser.uid,
-    //                 date: Timestamp.now(),
-    //             }),
-    //         }
-    //     )
-    // }
+        await updateDoc(doc(firestore, "userChats", currentUser.displayName), {
+            [contextData.chatId + ".lastMessage"]: {
+                message,
+            },
+            [contextData.chatId + ".date"]: serverTimestamp(),
+        });
+
+        await updateDoc(doc(firestore, "userChats", contextData.displayName), {
+            [contextData.chatId + ".lastMessage"]: {
+                message,
+            },
+            [contextData.chatId + ".date"]: serverTimestamp(),
+        });
+    }
+
+    const handleUserChange = (userInfo) => {
+        const chatId =
+            currentUser && currentUser.uid > userInfo.uid
+                ? currentUser.uid + userInfo.uid
+                : userInfo.uid + (currentUser ? currentUser.uid : '');
+
+        const data = {
+            user: userInfo,
+            chatId,
+        };
+        console.log('hello', userInfo)
+        setContextData(data);
+    };
+
     return (
-        <AppContext.Provider value={{ registerWithEmailAndPassword, getChats,chatUser, findUser, selectUser, loginWithEmailAndPassword, logOut, isLoggedIn, user, currentUser }}>
+        <AppContext.Provider value={{ registerWithEmailAndPassword, handleUserChange,sendMessage, getChats, chatUser, findUser, selectUser, loginWithEmailAndPassword, logOut, isLoggedIn, currentUser }}>
             {props.children}
         </AppContext.Provider>
     );
