@@ -1,13 +1,12 @@
 import { Avatar, Box, Typography } from '@mui/material';
 import React from 'react';
 import { useFirebase } from '../context/Services';
+import Moment from 'react-moment';
 
 const Message = ({ msg }) => {
   const firebase = useFirebase();
   const currentUser = firebase.currentUser;
   const data = firebase.contextData;
-
-
 
   return (
     <>
@@ -16,14 +15,13 @@ const Message = ({ msg }) => {
           display: 'flex',
           flexDirection: 'column',
           rowGap: 2,
-          overflow: 'auto',
-          height: '87vh',
+          height: 'fit-content',
         }}
       >
-        {msg.map((ms, index) => (
-          ms.senderId === currentUser.uid ? (
+        {
+          msg &&
+          msg.senderId === currentUser.uid ? (
             <Box
-              key={index}
               sx={{
                 bgcolor: '#141414',
                 display: 'flex',
@@ -40,12 +38,17 @@ const Message = ({ msg }) => {
             >
               <Box sx={{ display: 'grid' }}>
                 <Typography sx={{ color: 'white', fontSize: '16px'}}>
-                  {ms.message}
+                  {msg.message}
+                </Typography>
+                <Typography sx={{color:'white',fontSize:'10px'}}>
+                  {/* <Moment format="hh:mm"> */}
+                  {/* {console.log(msg)} */}
+                  {/* </Moment> */}
                 </Typography>
               </Box>
               <Avatar
                 src={
-                  ms.senderId === currentUser.uid
+                  msg.senderId === currentUser.uid
                     ? currentUser.photoURL
                     : data.user.photoURL
                 }
@@ -54,7 +57,6 @@ const Message = ({ msg }) => {
             </Box>
           ) : (
             <Box
-              key={index}
               sx={{
                 bgcolor: '#141414',
                 display: 'flex',
@@ -71,20 +73,22 @@ const Message = ({ msg }) => {
             >
               <Avatar
                 src={
-                  ms.senderId === currentUser.uid
+                  msg.senderId === currentUser.uid
                     ? currentUser.photoURL
                     : data.user.photoURL
                 }
                 sx={{ height: '20px', width: '20px' }}
               />
               <Box sx={{ display: 'grid' }}>
+              
                 <Typography sx={{ color: 'white', fontSize: '16px' }}>
-                  {ms.message}
+                  {msg.message}
                 </Typography>
               </Box>
             </Box>
           )
-        ))}
+        // ))
+        }
       </Box>
     </>
   );

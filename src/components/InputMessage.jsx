@@ -5,8 +5,14 @@ import { useFirebase } from '../context/Services';
 const InputMessage = () => {
     const [message, setMessage] = useState('')
     const firebase = useFirebase()
-    const handleSend = ()=>{
-        firebase.sendMessage(message);
+    const handleSend = async()=>{
+        if (message.trim() === '') {
+            alert('can not send empty message')
+        }
+        else {
+            setMessage('')
+            await firebase.sendMessage(message);
+        }
         setMessage('')
     }
     return (

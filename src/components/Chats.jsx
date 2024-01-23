@@ -20,7 +20,9 @@ const Chats = () => {
     return (
         <>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                {Object.values(chats).map((c) => (
+                { chats&&
+                
+                Object.values(chats).map((c) => (
                     <Box
                         key={c.date}
                         sx={{ display: 'flex', alignItems: 'center', borderBottom: 1, borderColor: '#666', p: 1, gap: 2, cursor: 'pointer' }}

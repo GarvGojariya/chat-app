@@ -170,6 +170,7 @@ export const AppProvider = (props) => {
         setContextData(data);
     };
     const getMessage = async () => {
+        
         try {
             const snapshot = await getDoc(doc(firestore, 'chats', contextData.chatId));
             const messageData = snapshot.data()
