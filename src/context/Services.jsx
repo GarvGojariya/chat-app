@@ -35,10 +35,6 @@ export const AppProvider = (props) => {
     const [currentUser, setCurrentUser] = useState('')
     const [contextData, setContextData] = useState({ chatId: '', user: {} })
     const navigate = useNavigate()
-    // const chatContext = useChatContext()
-    // const data = chatContext.data
-
-
     //firebase authentication 
     useEffect(() => {
         const unsub = onAuthStateChanged(firebaseAuth, (user) => {
@@ -174,7 +170,6 @@ export const AppProvider = (props) => {
             if (!contextData.chatId) {
                 return [];
             }
-
             const snapshot = await getDoc(doc(firestore, 'chats', contextData.chatId));
             const messageData = snapshot.data();
             return messageData || [];

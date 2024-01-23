@@ -8,12 +8,9 @@ const Chats = () => {
     const [chats, setChats] = useState([])
     const firebase = useFirebase()
     const currentUser = firebase.currentUser
-
-
     useEffect(() => {
         firebase.getChats().then((chatsData) => setChats(chatsData));
     }, [currentUser.uid,firebase]);
-
     const handleSelect = (userInfo) => {
         firebase.handleUserChange(userInfo)
     };
@@ -27,7 +24,7 @@ const Chats = () => {
                         key={c.date}
                         sx={{ display: 'flex', alignItems: 'center', borderBottom: 1, borderColor: '#666', p: 1, gap: 2, cursor: 'pointer' }}
                         onClick={() => handleSelect(c.userInfo)}>
-                        <Avatar src={c.userInfo.photoURL} />
+                        <Avatar src={c.userInfo.photoURL} key={'photo'} />
                         <Typography sx={{ color: 'white' }}>
                             {c.userInfo.displayName}
                         </Typography>
