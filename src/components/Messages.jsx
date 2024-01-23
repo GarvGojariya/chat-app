@@ -17,7 +17,7 @@ const Messages = () => {
         <>
             <Box sx={{overflow:'auto',height:'87vh',display:'grid',gap:1}}>
                 {messages &&
-                Object.values(messages).map((m) =>
+                messages.map((m) =>
                     <Message msg={m} key={m.id} />
                 )
                 }

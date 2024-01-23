@@ -53,7 +53,7 @@ const RegisterPage = () => {
                         </Typography>
                         <Box component="form" noValidate sx={{ mt: 3, display: 'grid' }}>
                             <Grid container spacing={2}>
-                                <Grid item xs={12} sm={6}>
+                                <Grid item xs={12}>
                                     <TextField
                                         required
                                         fullWidth

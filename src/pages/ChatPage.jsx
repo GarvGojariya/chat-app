@@ -8,7 +8,12 @@ import { useNavigate } from 'react-router-dom'
 
 const ChatPage = () => {
     const firebase = useFirebase()
+    const navigate = useNavigate()
     const data = firebase.contextData
+    const user = firebase.user
+    if (!user){
+        navigate('/login')
+    }
     return (
         <>
             <Box sx={{ display: 'flex', alignItems: 'end',bgcolor:'#666' }}>
