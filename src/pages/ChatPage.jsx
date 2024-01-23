@@ -11,19 +11,19 @@ const ChatPage = () => {
     const navigate = useNavigate()
     const data = firebase.contextData
     const currentUser = firebase.currentUser
-   useEffect(() => {
-    if (!currentUser){
-        navigate('/login')
-    }
-   }, [currentUser,navigate])
+    useEffect(() => {
+        if (!currentUser) {
+            navigate('/login')
+        }
+    }, [currentUser, navigate])
     return (
         <>
-            <Box sx={{ display: 'flex', alignItems: 'end',bgcolor:'#666' }}>
+            <Box sx={{ display: 'flex', alignItems: 'end', bgcolor: '#666', height: '100vh' }}>
                 <Sidebar />
-                <Box sx={{ display: 'grid', position: 'relative',width:'100%' ,height:'100vh',alignItems:'center'}}>
-                    <Box sx={{bgcolor:'#262626',display:'flex',top:0,position:'relative',height:'fit-content',alignItems:'center'}}>
-                        <Avatar src={data.user.photoURL}/>
-                        <Typography  color="white">{data.user.displayName}</Typography>
+                <Box sx={{ display: 'grid', position: 'relative', width: '100%', height: '100vh', alignItems: 'center' }}>
+                    <Box sx={{ bgcolor: '#262626', display: 'flex', top: 0,gap:1, position: 'relative', height: 'fit-content', alignItems: 'center' }}>
+                        <Avatar src={data.user.photoURL}  sx={{mt:1,mb:1}}/>
+                        <Typography color="white">{data.user.displayName}</Typography>
                     </Box>
                     <Messages />
                     <InputMessage />

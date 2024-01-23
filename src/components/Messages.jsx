@@ -15,7 +15,7 @@ const Messages = () => {
     }, [data.chatId, messageList,firebase])
     return (
         <>
-            <Box sx={{overflow:'auto',height:'87vh',display:'grid',gap:1}}>
+            <Box sx={{overflow:'auto',height:'80vh',display:'grid',gap:1,mt:1}}>
                 {messages &&
                 messages.map((m) =>
                     <Message msg={m} key={m.id} />
