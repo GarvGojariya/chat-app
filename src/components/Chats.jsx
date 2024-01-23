@@ -1,5 +1,5 @@
 import { Avatar, Box, Typography } from '@mui/material'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useFirebase } from '../context/Services'
 
 
@@ -12,7 +12,7 @@ const Chats = () => {
 
     useEffect(() => {
         firebase.getChats().then((chatsData) => setChats(chatsData));
-    }, [currentUser.uid]);
+    }, [currentUser.uid,firebase]);
 
     const handleSelect = (userInfo) => {
         firebase.handleUserChange(userInfo)

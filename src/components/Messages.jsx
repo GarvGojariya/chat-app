@@ -12,7 +12,7 @@ const Messages = () => {
     useEffect(() => {
         firebase.getMessage().then((msgs) => setMessageList(msgs));
         setMessages(messageList.messages)
-    }, [data.chatId, messageList])
+    }, [data.chatId, messageList,firebase])
     return (
         <>
             <Box sx={{overflow:'auto',height:'87vh',display:'grid',gap:1}}>

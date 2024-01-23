@@ -1,7 +1,7 @@
 import { Avatar, Box, Typography } from '@mui/material';
 import React from 'react';
 import { useFirebase } from '../context/Services';
-import Moment from 'react-moment';
+
 
 const Message = ({ msg }) => {
   const firebase = useFirebase();
@@ -33,7 +33,7 @@ const Message = ({ msg }) => {
                 alignItems: 'center',
                 borderBottomLeftRadius: '12px',
                 borderBottomRightRadius: '12px',
-                borderTopLeftRadius: '12px',width:'fit-content',maxWidth:'80%' 
+                borderTopLeftRadius: '12px',maxWidth:'80%' 
               }}
             >
               <Box sx={{ display: 'grid' }}>
@@ -68,7 +68,7 @@ const Message = ({ msg }) => {
                 gap: 1,
                 borderBottomLeftRadius: '12px',
                 borderBottomRightRadius: '12px',
-                borderTopRightRadius: '12px',width:'fit-content',maxWidth:'80%' 
+                borderTopRightRadius: '12px',maxWidth:'80%' 
               }}
             >
               <Avatar

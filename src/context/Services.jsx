@@ -44,11 +44,11 @@ export const AppProvider = (props) => {
         const unsub = onAuthStateChanged(firebaseAuth, (user) => {
             setCurrentUser(user);
         });
-        console.log(currentUser)
+        // console.log(currentUser)
         return () => {
             unsub();
         };
-    }, []);
+    }, [currentUser]);
     const isLoggedIn = currentUser ? true : false;
     const registerWithEmailAndPassword = async (email, password, displayName, image) => {
         try {
@@ -170,16 +170,20 @@ export const AppProvider = (props) => {
         setContextData(data);
     };
     const getMessage = async () => {
-        
         try {
+            if (!contextData.chatId) {
+                return [];
+            }
+
             const snapshot = await getDoc(doc(firestore, 'chats', contextData.chatId));
-            const messageData = snapshot.data()
+            const messageData = snapshot.data();
             return messageData || [];
         } catch (error) {
             console.error('Error getting messages:', error);
             return [];
         }
     }
+
     return (
         <AppContext.Provider value={{ registerWithEmailAndPassword, getMessage, contextData, handleUserChange, sendMessage, getChats, chatUser, findUser, selectUser, loginWithEmailAndPassword, logOut, isLoggedIn, currentUser }}>
             {props.children}

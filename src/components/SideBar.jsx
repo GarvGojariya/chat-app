@@ -26,12 +26,11 @@ const Sidebar = () => {
                         </Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <Avatar src={currentUser.photoURL} sx={{ height: '28px', width: '28px' }} />
-                            <IconButton>
+                            <IconButton     onClick={handleClick}>
                                 <MoreVertOutlinedIcon sx={{ color: 'white', height: '28px', width: '28px' }}
                                     aria-controls={open ? 'basic-menu' : undefined}
                                     aria-haspopup="true"
-                                    aria-expanded={open ? 'true' : undefined}
-                                    onClick={handleClick} />
+                                    aria-expanded={open ? 'true' : undefined} />
                             </IconButton>
                         </Box>
                         <Menu

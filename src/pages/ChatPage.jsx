@@ -10,10 +10,12 @@ const ChatPage = () => {
     const firebase = useFirebase()
     const navigate = useNavigate()
     const data = firebase.contextData
-    const user = firebase.user
-    if (!user){
+    const currentUser = firebase.currentUser
+   useEffect(() => {
+    if (!currentUser){
         navigate('/login')
     }
+   }, [currentUser,navigate])
     return (
         <>
             <Box sx={{ display: 'flex', alignItems: 'end',bgcolor:'#666' }}>

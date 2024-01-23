@@ -23,7 +23,7 @@ const Search = () => {
         ></Input>
       </Box>
       {chatUser && (
-        <Box onClick={handleSelect} sx={{ display: 'flex', p: 2, bgcolor: 'white',alignItems:'center',bgcolor:'#262626',gap:2  }}>
+        <Box onClick={handleSelect} sx={{ display: 'flex', p: 2,alignItems:'center',bgcolor:'#262626',gap:2  }}>
           {chatUser.photoURL && <Avatar src={chatUser.photoURL}  />}
           <Box>
             <Typography sx={{color:'#999'}}>{chatUser.displayName}</Typography>
