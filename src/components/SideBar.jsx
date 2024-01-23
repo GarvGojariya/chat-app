@@ -20,13 +20,15 @@ const Sidebar = () => {
             {
                 currentUser &&
                 <Box sx={{ width: 1 / 6, display: 'grid', height: '100vh', bgcolor: '#141414', p: 1, alignContent: 'start' }}>
-                    <Box sx={{ display: 'flex', width: '100%', maxWidth: '100%', maxHeight: '100%', height: 'fit-content', alignItems: 'center', placeContent: 'space-between' }}>
-                        <Typography sx={{ height: '100%', color: 'white' }}>
-                            Chats
-                        </Typography>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Box sx={{ display: 'flex', width: '100%', pt: 1, maxWidth: '100%', maxHeight: '100%', height: 'fit-content', alignItems: 'center', placeContent: 'space-between' }}>
+                        <Box sx={{ display: 'flex', gap: 1 }}>
+                            <Typography sx={{ height: '100%', color: 'white' }}>
+                                {currentUser.displayName}
+                            </Typography>
                             <Avatar src={currentUser.photoURL} sx={{ height: '28px', width: '28px' }} />
-                            <IconButton     onClick={handleClick}>
+                        </Box>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <IconButton onClick={handleClick}>
                                 <MoreVertOutlinedIcon sx={{ color: 'white', height: '28px', width: '28px' }}
                                     aria-controls={open ? 'basic-menu' : undefined}
                                     aria-haspopup="true"
@@ -43,6 +45,7 @@ const Sidebar = () => {
                             }}
                         >
                             <MenuItem onClick={handleClose}>Profile</MenuItem>
+                            <MenuItem>Create Group</MenuItem>
                             <MenuItem onClick={handleClose}>My account</MenuItem>
                             <MenuItem onClick={() => { firebase.logOut() }}>Logout</MenuItem>
                         </Menu>

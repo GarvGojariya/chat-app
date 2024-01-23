@@ -178,7 +178,6 @@ export const AppProvider = (props) => {
             return [];
         }
     }
-
     return (
         <AppContext.Provider value={{ registerWithEmailAndPassword, getMessage, contextData, handleUserChange, sendMessage, getChats, chatUser, findUser, selectUser, loginWithEmailAndPassword, logOut, isLoggedIn, currentUser }}>
             {props.children}

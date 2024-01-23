@@ -43,10 +43,11 @@ const Message = ({ msg }) => {
                 }}
               >
                 <Box sx={{ display: 'grid' }}>
+                  <Typography sx={{ color: 'white', fontSize: '12px',textAlign:'end' }}>
+                    {currentUser.displayName}
+                  </Typography>
                   <Typography sx={{ color: 'white', fontSize: '16px' }}>
                     {msg.message}
-                  </Typography>
-                  <Typography sx={{ color: 'white', fontSize: '10px' }}>
                   </Typography>
                 </Box>
               </Box>
@@ -90,6 +91,9 @@ const Message = ({ msg }) => {
                 }}
               >
                 <Box sx={{ display: 'grid' }}>
+                <Typography sx={{ color: 'white', fontSize: '12px' }}>
+                    {data.user.displayName}
+                  </Typography>
                   <Typography sx={{ color: 'white', fontSize: '16px' }}>
                     {msg.message}
                   </Typography>
