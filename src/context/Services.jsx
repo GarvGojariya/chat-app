@@ -197,7 +197,6 @@ export const AppProvider = (props) => {
                             photoURL : downloadUrl
                         }
                     });
-                    groupData.push({photoURL:downloadUrl})
                 }
                 )
             }
