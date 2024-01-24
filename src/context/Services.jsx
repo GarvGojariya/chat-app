@@ -234,7 +234,6 @@ export const AppProvider = (props) => {
             return [];
         }
     };
-
     const sendGroupMessage = async (message) => {
         await updateDoc(doc(firestore, "groupChats", groupData.displayName), {
             messages: arrayUnion({
@@ -252,7 +251,7 @@ export const AppProvider = (props) => {
         await updateDoc(doc(firestore, 'userGroups', member), {
             [groupId + ".groupInfo"]: {
                 displayName: groupData.displayName,
-
+                photoURL : groupData.photoURL
             }
         })
     }
