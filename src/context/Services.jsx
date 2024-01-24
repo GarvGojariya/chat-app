@@ -226,7 +226,6 @@ export const AppProvider = (props) => {
             if (!groupData.displayName) {
                 return [];
             }
-
             const snapshot = await getDoc(doc(firestore, 'groupChats', groupData.displayName));
             const messageData = snapshot.data();
             return messageData || [];

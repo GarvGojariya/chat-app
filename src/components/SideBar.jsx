@@ -11,6 +11,7 @@ const Sidebar = () => {
     const [anchorEl, setAnchorEl] = useState('')
     const [isPopupOpen, setPopupOpen] = useState(false);
     const [groupName, setGroupName] = useState('')
+    const [groupImage, setGroupImage] = useState('')
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -26,13 +27,15 @@ const Sidebar = () => {
     const createGroup = () => {
         firebase.createGroup(groupName)
         setPopupOpen(false);
-
-
     };
-const myGroups = () =>{
-    navigate('/groups')
-    setPopupOpen(false)
-}
+    const onFileChange = e => {
+        setGroupImage(e.target.files[0]);
+        e.preventDefault();
+    }
+    const myGroups = () => {
+        navigate('/groups')
+        setPopupOpen(false)
+    }
     return (
         <>
             {
@@ -69,16 +72,23 @@ const myGroups = () =>{
                             <MenuItem onClick={() => { firebase.logOut() }}>Logout</MenuItem>
                         </Menu>
                     </Box>
+                    <Divider sx={{ color: '#666', borderTop: 1 }} />
                     {isPopupOpen && (
-                        <Box sx={{display:'flex',alignItems:'center'}}>
-                            <Input placeholder='enter group name' sx={{color:'white'}}
-                            value={groupName}
-                            onChange={(e)=>setGroupName(e.target.value)}
-                            />
-                            <Button sx={{color:'#666'}} onClick={createGroup}>create</Button>
+                        <Box sx={{ display: 'flex', alignItems: 'center', height: '70px', width: '100%', bgcolor: 'transparent' }}>
+                            <Box sx={{display:'flex',flexDirection:'column'}}>
+                                <Input placeholder='enter group name' sx={{ color: 'white' }}
+                                    value={groupName}
+                                    type='text'
+                                    onChange={(e) => setGroupName(e.target.value)}
+                                />
+                                <Input placeholder='enter group name' sx={{ color: 'white' }}
+                                    type='file'
+                                    onChange={onFileChange}
+                                />
+                            </Box>
+                            <Button sx={{ color: '#999' }} onClick={createGroup}>create</Button>
                         </Box>
                     )}
-                    <Divider sx={{ color: '#666', borderTop: 1 }} />
                     <Search />
                     <Chats />
                 </Box>}

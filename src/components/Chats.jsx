@@ -8,13 +8,14 @@ const Chats = () => {
     const [chats, setChats] = useState([])
     const firebase = useFirebase()
     const currentUser = firebase.currentUser
-    useEffect(() => {
-        firebase.getChats().then((chatsData) => setChats(chatsData));
-    }, [currentUser.uid, firebase,chats,currentUser]);
     const handleSelect = (userInfo) => {
         firebase.handleUserChange(userInfo)
     };
     
+    useEffect(() => {
+        firebase.getChats().then((chatsData) => setChats(chatsData));
+    }, [currentUser.uid, firebase,currentUser,]);
+
     return (
         <>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
@@ -30,7 +31,7 @@ const Chats = () => {
                                 {c.userInfo.displayName}
                             </Typography>
                             <Typography sx={{ color: 'gray' ,fontSize:'12px'}}>
-                                {c.lastMessage.message}
+                                {c.lastMessage?.message}
                             </Typography>
                             </Box>
                         </Box>

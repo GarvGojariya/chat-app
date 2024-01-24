@@ -8,7 +8,6 @@ const Search = () => {
   const chatUser = firebase.chatUser
   const handleSearch = () => {
     firebase.findUser(userName);
-
   }
   const handleSelect = () => {
     firebase.selectUser();
