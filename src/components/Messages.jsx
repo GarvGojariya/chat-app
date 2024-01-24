@@ -10,9 +10,13 @@ const Messages = () => {
     const data = firebase.contextData
 
     useEffect(() => {
-        firebase.getMessage().then((msgs) => setMessageList(msgs));
-        setMessages(messageList.messages)
-    }, [data.chatId, messageList, firebase])
+        firebase.getMessage().then((msgs) => {
+            setMessageList(msgs);
+            setMessages(msgs.messages)
+        }
+
+        );
+    }, [data.chatId, firebase, messages])
     return (
         <>
             <Box sx={{ overflow: 'auto', height: '80vh', display: 'grid', gap: 1, mt: 1 }}>

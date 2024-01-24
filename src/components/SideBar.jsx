@@ -1,12 +1,16 @@
-import { Avatar, Box, Divider, IconButton, Menu, MenuItem, Typography } from '@mui/material'
+import { Avatar, Box, Button, Divider, IconButton, Input, Menu, MenuItem, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
 import { useFirebase } from '../context/Services';
 import Search from './Search';
 import Chats from './Chats';
+import { useNavigate } from 'react-router-dom';
 const Sidebar = () => {
     const firebase = useFirebase()
+    const navigate = useNavigate()
     const [anchorEl, setAnchorEl] = useState('')
+    const [isPopupOpen, setPopupOpen] = useState(false);
+    const [groupName, setGroupName] = useState('')
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -15,6 +19,20 @@ const Sidebar = () => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+    const handleButtonClick = () => {
+        setPopupOpen(true);
+        setAnchorEl(null)
+    };
+    const createGroup = () => {
+        firebase.createGroup(groupName)
+        setPopupOpen(false);
+
+
+    };
+const myGroups = () =>{
+    navigate('/groups')
+    setPopupOpen(false)
+}
     return (
         <>
             {
@@ -45,11 +63,21 @@ const Sidebar = () => {
                             }}
                         >
                             <MenuItem onClick={handleClose}>Profile</MenuItem>
-                            <MenuItem>Create Group</MenuItem>
+                            <MenuItem onClick={handleButtonClick}>Create Group</MenuItem>
                             <MenuItem onClick={handleClose}>My account</MenuItem>
+                            <MenuItem onClick={myGroups}>My Groups</MenuItem>
                             <MenuItem onClick={() => { firebase.logOut() }}>Logout</MenuItem>
                         </Menu>
                     </Box>
+                    {isPopupOpen && (
+                        <Box sx={{display:'flex',alignItems:'center'}}>
+                            <Input placeholder='enter group name' sx={{color:'white'}}
+                            value={groupName}
+                            onChange={(e)=>setGroupName(e.target.value)}
+                            />
+                            <Button sx={{color:'#666'}} onClick={createGroup}>create</Button>
+                        </Box>
+                    )}
                     <Divider sx={{ color: '#666', borderTop: 1 }} />
                     <Search />
                     <Chats />

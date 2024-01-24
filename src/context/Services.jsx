@@ -33,6 +33,7 @@ export const AppProvider = (props) => {
 
     const [chatUser, setChatUser] = useState(null)
     const [currentUser, setCurrentUser] = useState('')
+    const [groupData, setGroupData] = useState([])
     const [contextData, setContextData] = useState({ chatId: '', user: {} })
     const navigate = useNavigate()
     //firebase authentication 
@@ -64,6 +65,7 @@ export const AppProvider = (props) => {
                     photoURL: downloadUrl,
                 });
                 await setDoc(doc(firestore, "userChats", userCredential.user.displayName), {});
+                await setDoc(doc(firestore, "userGroups", userCredential.user.displayName), {});
             })
         } catch (error) {
             console.error("Error during registration:", error);
@@ -153,7 +155,6 @@ export const AppProvider = (props) => {
             [contextData.chatId + ".date"]: serverTimestamp(),
         });
     }
-
     const handleUserChange = (userInfo) => {
         const chatId =
             currentUser && currentUser.uid > userInfo.uid
@@ -178,8 +179,90 @@ export const AppProvider = (props) => {
             return [];
         }
     }
+    const createGroup = async (groupName,groupImage) => {
+        const groupId = groupName
+        try {
+            const res = await getDoc(doc(firestore, "groupChats", groupId));
+            if (!res.exists()) {
+                // Create a chat in the "chats" collection
+                const date = new Date().getTime();
+                const storageref = ref(storage, `${groupImage + date}`);
+                await uploadBytesResumable(storageref, groupImage).then(async () => {
+                    const downloadUrl = await getDownloadURL(storageref);
+                    await setDoc(doc(firestore, "groupChats", groupId), { messages: [] });
+                    // Update "userChats" for the current user
+                    await updateDoc(doc(firestore, "userGroups", currentUser.displayName), {
+                        [groupId + ".groupInfo"]: {
+                            // uid: ,
+                            displayName: groupName,
+                            photoURL : downloadUrl
+                            // photoURL: chatUser.photoURL,
+                        }
+                    });
+                }
+                )
+            }
+        } catch (error) {
+            console.error("Error during chat creation:", error);
+        }
+    }
+    const getGroupChats = async () => {
+        const id = currentUser.displayName
+        try {
+            const snapshot = await getDoc(doc(firestore, 'userGroups', id));
+            const GroupChatData = snapshot.data()
+            return GroupChatData || [];
+        } catch (error) {
+            console.error('Error getting chats:', error);
+            return [];
+        }
+    };
+    const handleGroupChange = (groupInfo) => {
+        const data = groupInfo
+        setGroupData(data);
+    };
+    console.log(groupData)
+
+    const getGroupMessages = async () => {
+        try {
+            // Check if groupData is available
+            if (!groupData.displayName) {
+                return [];
+            }
+
+            const snapshot = await getDoc(doc(firestore, 'groupChats', groupData.displayName));
+            const messageData = snapshot.data();
+            return messageData || [];
+        } catch (error) {
+            console.error('Error getting messages:', error);
+            return [];
+        }
+    };
+
+    const sendGroupMessage = async (message) => {
+        await updateDoc(doc(firestore, "groupChats", groupData.displayName), {
+            messages: arrayUnion({
+                id: uuid(),
+                message,
+                senderId: currentUser.uid,
+                senderName: currentUser.displayName,
+                senderPhotoURL : currentUser.photoURL,
+                date: Timestamp.now(),
+            }),
+        });
+    }
+    const addGroupMembers = async (member) => {
+        const groupId = groupData.displayName
+        await updateDoc(doc(firestore, 'userGroups', member), {
+            [groupId + ".groupInfo"]: {
+                // uid: ,
+                displayName: groupData.displayName,
+                // photoURL: chatUser.photoURL,
+            }
+        })
+    }
     return (
-        <AppContext.Provider value={{ registerWithEmailAndPassword, getMessage, contextData, handleUserChange, sendMessage, getChats, chatUser, findUser, selectUser, loginWithEmailAndPassword, logOut, isLoggedIn, currentUser }}>
+        <AppContext.Provider value={{ registerWithEmailAndPassword, addGroupMembers, sendGroupMessage, getGroupMessages, groupData, handleGroupChange, getGroupChats, getMessage, createGroup, contextData, handleUserChange, sendMessage, getChats, chatUser, findUser, selectUser, loginWithEmailAndPassword, logOut, isLoggedIn, currentUser }}>
             {props.children}
         </AppContext.Provider>
     );

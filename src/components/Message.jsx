@@ -29,6 +29,8 @@ const Message = ({ msg }) => {
               p: 1,
               gap: 1,
               alignItems: 'center',
+              height:'fit-content'
+
             }}>
               <Box
                 sx={{
@@ -39,7 +41,8 @@ const Message = ({ msg }) => {
                   alignItems: 'center',
                   borderBottomLeftRadius: '12px',
                   borderBottomRightRadius: '12px',
-                  borderTopLeftRadius: '12px', maxWidth: '80%'
+                  borderTopLeftRadius: '12px', maxWidth: '80%',
+                  height:'fit-content'
                 }}
               >
                 <Box sx={{ display: 'grid' }}>
