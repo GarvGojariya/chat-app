@@ -75,7 +75,7 @@ const Sidebar = () => {
                     <Divider sx={{ color: '#666', borderTop: 1 }} />
                     {isPopupOpen && (
                         <Box sx={{ display: 'flex', alignItems: 'center', height: '70px', width: '100%', bgcolor: 'transparent' }}>
-                            <Box sx={{display:'flex',flexDirection:'column'}}>
+                            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                                 <Input placeholder='enter group name' sx={{ color: 'white' }}
                                     value={groupName}
                                     type='text'
@@ -91,7 +91,8 @@ const Sidebar = () => {
                     )}
                     <Search />
                     <Chats />
-                </Box>}
+                </Box>
+            }
         </>
     )
 }
