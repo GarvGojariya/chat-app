@@ -10,7 +10,7 @@ const Chats = () => {
     const currentUser = firebase.currentUser
     useEffect(() => {
         firebase.getChats().then((chatsData) => setChats(chatsData));
-    }, [currentUser.uid, firebase,chats]);
+    }, [currentUser.uid, firebase,chats,currentUser]);
     const handleSelect = (userInfo) => {
         firebase.handleUserChange(userInfo)
     };
@@ -25,12 +25,14 @@ const Chats = () => {
                             sx={{ display: 'flex', alignItems: 'center', borderBottom: 1, borderColor: '#666', p: 1, gap: 2, cursor: 'pointer' }}
                             onClick={() => handleSelect(c.userInfo)}>
                             <Avatar src={c.userInfo.photoURL} key={'photo'} />
+                            <Box sx={{display:'grid'}}>
                             <Typography sx={{ color: 'white' }}>
                                 {c.userInfo.displayName}
                             </Typography>
-                            {/* <Typography sx={{ color: 'white' }}>
+                            <Typography sx={{ color: 'gray' ,fontSize:'12px'}}>
                                 {c.lastMessage.message}
-                            </Typography> */}
+                            </Typography>
+                            </Box>
                         </Box>
                     ))}
             </Box>

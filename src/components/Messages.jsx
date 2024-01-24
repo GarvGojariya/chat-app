@@ -19,10 +19,12 @@ const Messages = () => {
     }, [data.chatId, firebase, messages])
     return (
         <>
-            <Box sx={{ overflow: 'auto', height: '80vh', display: 'grid', gap: 1, mt: 1 }}>
+            <Box sx={{ overflow: 'auto', height: '82vh', display: 'flex',flexDirection:'column', mt: 1, bgcolor: '#666', overflowX: 'auto' }}>
                 {messages &&
                     messages.map((m) =>
-                        <Message msg={m} key={m.id} />
+                        <Box sx={{height:'fit-content'}}>
+                            <Message msg={m} key={m.id} />
+                        </Box>
                     )
                 }
             </Box>

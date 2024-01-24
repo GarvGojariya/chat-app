@@ -16,6 +16,7 @@ const Message = ({ msg }) => {
           flexDirection: 'column',
           rowGap: 2,
           height: 'fit-content',
+          maxHeight:'fit-content'
         }}
       >
         {

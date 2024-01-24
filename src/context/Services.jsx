@@ -193,12 +193,11 @@ export const AppProvider = (props) => {
                     // Update "userChats" for the current user
                     await updateDoc(doc(firestore, "userGroups", currentUser.displayName), {
                         [groupId + ".groupInfo"]: {
-                            // uid: ,
                             displayName: groupName,
                             photoURL : downloadUrl
-                            // photoURL: chatUser.photoURL,
                         }
                     });
+                    groupData.push({photoURL:downloadUrl})
                 }
                 )
             }
@@ -221,8 +220,6 @@ export const AppProvider = (props) => {
         const data = groupInfo
         setGroupData(data);
     };
-    console.log(groupData)
-
     const getGroupMessages = async () => {
         try {
             // Check if groupData is available
@@ -255,9 +252,8 @@ export const AppProvider = (props) => {
         const groupId = groupData.displayName
         await updateDoc(doc(firestore, 'userGroups', member), {
             [groupId + ".groupInfo"]: {
-                // uid: ,
                 displayName: groupData.displayName,
-                // photoURL: chatUser.photoURL,
+
             }
         })
     }
