@@ -2,7 +2,18 @@ import { Avatar, Box, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useFirebase } from '../context/Services'
 
+function convertTimestampToHHMM(timestampSeconds, timestampNanoseconds) {
+    const timestampMillis = timestampSeconds * 1000 + Math.round(timestampNanoseconds / 1e6);
+    const date = new Date(timestampMillis);
 
+    const formattedTime = new Intl.DateTimeFormat('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+    }).format(date);
+
+    return formattedTime;
+}
 
 const Chats = () => {
     const [chats, setChats] = useState([])
@@ -11,28 +22,47 @@ const Chats = () => {
     const handleSelect = (userInfo) => {
         firebase.handleUserChange(userInfo)
     };
-    
+    // useEffect(() => {
+    //     firebase.getChats().then((chatsData) => {
+    //         const sortedChats = Object.values(chatsData).sort((a, b) => b.date - a.date);
+    //         setChats(sortedChats);
+    //     });
+    // }, [currentUser.uid, firebase, currentUser]);
     useEffect(() => {
-        firebase.getChats().then((chatsData) => setChats(chatsData));
-    }, [currentUser.uid, firebase,currentUser,]);
-
+        const unsubscribe = firebase.getChats((chatsData) => {
+            if (chatsData) {
+                const sortedChats = Object.values(chatsData).sort((a, b) => b.date - a.date);
+                setChats(sortedChats);
+                // console.log(sortedChats)
+            }
+        });
+        return () => unsubscribe();
+    }, [currentUser.uid, firebase, currentUser]);
+    
     return (
         <>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 {chats &&
-                    Object.values(chats).map((c) => (
+                    Object.values(chats)?.sort((a, b) => b.date - a.date).map((c) => (
                         <Box
                             key={c.date}
                             sx={{ display: 'flex', alignItems: 'center', borderBottom: 1, borderColor: '#666', p: 1, gap: 2, cursor: 'pointer' }}
                             onClick={() => handleSelect(c.userInfo)}>
                             <Avatar src={c.userInfo.photoURL} key={'photo'} />
-                            <Box sx={{display:'grid'}}>
-                            <Typography sx={{ color: 'white' }}>
-                                {c.userInfo.displayName}
-                            </Typography>
-                            <Typography sx={{ color: 'gray' ,fontSize:'12px'}}>
-                                {c.lastMessage?.message}
-                            </Typography>
+                            <Box sx={{ display: 'grid', gap: 1, alignItems: 'center', width: '100%' }}>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+                                    <Typography sx={{ color: 'white' }}>
+                                        {c.userInfo.displayName}
+                                    </Typography>
+                                    <Typography sx={{ color: 'gray', fontSize: '12px' }}>
+                                        {c.date && convertTimestampToHHMM(c.date.seconds, c.date.nanoseconds)}
+                                    </Typography>
+                                </Box>
+                                <Typography sx={{ color: 'gray', fontSize: '12px' }}>
+                                    {c.lastMessage?.message.length > 10
+                                        ? `${c.lastMessage?.message.substring(0, 8)}...`
+                                        : c.lastMessage?.message}
+                                </Typography>
                             </Box>
                         </Box>
                     ))}
@@ -41,4 +71,4 @@ const Chats = () => {
     )
 }
 
-export default Chats
+export default Chats;

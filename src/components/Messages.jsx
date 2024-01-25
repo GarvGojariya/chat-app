@@ -17,6 +17,7 @@ const Messages = () => {
 
         );
     }, [data.chatId, firebase, messages])
+    
     return (
         <>
             <Box sx={{ overflow: 'auto', height: '82vh', display: 'flex',flexDirection:'column', mt: 1, bgcolor: '#666', overflowX: 'auto' }}>

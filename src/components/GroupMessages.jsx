@@ -17,7 +17,7 @@ const GroupMessages = () => {
     }, [firebase, data?.displayName,messages]);
     return (
         <>
-            <Box sx={{ overflow: 'auto', height: '82vh', display: 'grid', gap: 1, mt: 1, bgcolor: '#666', overflowX: 'auto' }}>
+            <Box sx={{ overflow: 'auto', height: '82vh', display: 'flex',flexDirection:'column', gap: 1, mt: 1, bgcolor: '#666', overflowX: 'auto' }}>
                 <Box>
                     {messages &&
                         messages.map((m) =>

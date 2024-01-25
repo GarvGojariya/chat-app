@@ -29,8 +29,12 @@ const Groups = () => {
         setPopupOpen(true);
         setAnchorEl(null)
     };
+    const onFileChange = e => {
+        setGroupImage(e.target.files[0]);
+        e.preventDefault();
+    }
     const createGroup = () => {
-        firebase.createGroup(groupName,groupImage)
+        firebase.createGroup(groupName, groupImage)
         setPopupOpen(false);
     };
     const handleAddClick = () => {
@@ -41,11 +45,7 @@ const Groups = () => {
         setisAddBoxOpen(false)
         setMember('')
     }
-    const onFileChange = e => {
-        setGroupImage(e.target.files[0]);
-        e.preventDefault();
-    }
-    const goChats = () =>{
+    const goChats = () => {
         handleClose();
         navigate('/')
     }
@@ -90,7 +90,7 @@ const Groups = () => {
                     </Box>
                     <Box sx={{ width: '100%', height: '100vh', display: 'grid' }}>
                         <Box sx={{ bgcolor: '#262626', display: 'flex', top: 0, gap: 1, position: 'relative', height: 'fit-content', alignItems: 'center' }}>
-                            <Avatar sx={{ mt: 1, mb: 1 }} src={data.photoURL}/>
+                            <Avatar sx={{ mt: 1, mb: 1 }} src={data.photoURL} />
                             <Typography color="white">{data.displayName}</Typography>
                             <IconButton onClick={handleAddClick}>
                                 <AddCircleOutlineIcon sx={{ color: '#999' }} />
@@ -108,17 +108,19 @@ const Groups = () => {
                             }
                         </Box>
                         {isPopupOpen && (
-                            <Box sx={{ display: 'flex', alignItems: 'center', height: '70px',bgcolor:'#666'  }}>
-                                <Input placeholder='enter group name' sx={{ color: 'white' }}
-                                    value={groupName}
-                                    type='text'
-                                    onChange={(e) => setGroupName(e.target.value)}
-                                />
-                                <Input placeholder='enter group name' sx={{ color: 'white' }}
-                                    type='file'
-                                    onChange={onFileChange}
-                                />
-                                <Button sx={{ color: '#121212' }} onClick={createGroup}>create</Button>
+                            <Box sx={{ display: 'flex', alignItems: 'center', height: '70px', width: '100%', bgcolor: '#666' }}>
+                                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                    <Input placeholder='enter group name' sx={{ color: 'white' }}
+                                        value={groupName}
+                                        type='text'
+                                        onChange={(e) => setGroupName(e.target.value)}
+                                    />
+                                    <Input placeholder='enter group name' sx={{ color: 'white' }}
+                                        type='file'
+                                        onChange={onFileChange}
+                                    />
+                                </Box>
+                                <Button sx={{ color: '#999' }} onClick={createGroup}>create</Button>
                             </Box>
                         )}
                         <GroupMessages />

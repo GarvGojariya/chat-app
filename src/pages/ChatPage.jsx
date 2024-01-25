@@ -15,7 +15,7 @@ const ChatPage = () => {
         if (!currentUser) {
             navigate('/login')
         }
-    }, [currentUser, navigate])
+    }, [currentUser, navigate,firebase])
     return (
         <>
             <Box sx={{ display: 'flex', alignItems: 'end', bgcolor: '#666', height: '100vh' }}>

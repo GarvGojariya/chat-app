@@ -12,6 +12,7 @@ const Sidebar = () => {
     const [isPopupOpen, setPopupOpen] = useState(false);
     const [groupName, setGroupName] = useState('')
     const [groupImage, setGroupImage] = useState('')
+    const [setLoading, setSetLoading] = useState(false)
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -25,9 +26,10 @@ const Sidebar = () => {
         setAnchorEl(null)
     };
     const createGroup = () => {
-        firebase.createGroup(groupName)
+      
+        firebase.createGroup(groupName,groupImage)
         setPopupOpen(false);
-    };
+       };
     const onFileChange = e => {
         setGroupImage(e.target.files[0]);
         e.preventDefault();
