@@ -19,10 +19,6 @@ const Message = ({ msg }) => {
     }).format(date);
     return formattedTime;
   }
-  const handleReadUnread = (senderId,id) =>{
-      firebase.handleReadUnread(senderId,id)
-      console.log(id)
-  }
   return (
     <>
       <Box
@@ -45,7 +41,8 @@ const Message = ({ msg }) => {
               p: 1,
               gap: 1,
               alignItems: 'center',
-              height: 'fit-content'
+              height: 'fit-content',
+              maxWidth:'75%'
             }}>
               <Box
                 sx={{
@@ -56,11 +53,11 @@ const Message = ({ msg }) => {
                   alignItems: 'center',
                   borderBottomLeftRadius: '12px',
                   borderBottomRightRadius: '12px',
-                  borderTopLeftRadius: '12px', maxWidth: '80%',
+                  borderTopLeftRadius: '12px', 
                   height: 'fit-content'
                 }}
               >
-                <Box sx={{ display: 'grid',cursor:'pointer' }} onClick={()=>handleReadUnread(msg.senderId,msg.id)}>
+                <Box sx={{ display: 'grid',cursor:'pointer' }} >
                   <Typography sx={{ color: '#c4bdbc', fontSize: '12px', textAlign: 'end' }}>
                     {currentUser.displayName}
                   </Typography>
@@ -81,7 +78,7 @@ const Message = ({ msg }) => {
               mr: 'auto',
               p: 1,
               gap: 1,
-              alignItems: 'center',
+              alignItems: 'center',maxWidth:'75%'
             }}>
               <Box
                 sx={{
@@ -92,10 +89,10 @@ const Message = ({ msg }) => {
                   alignItems: 'center',
                   borderBottomLeftRadius: '12px',
                   borderBottomRightRadius: '12px',
-                  borderTopRightRadius: '12px', maxWidth: '80%'
+                  borderTopRightRadius: '12px', 
                 }}
               >
-                <Box sx={{ display: 'grid',cursor:'pointer' }}onClick={()=>handleReadUnread(msg.senderId,msg.id)}>
+                <Box sx={{ display: 'grid',cursor:'pointer'}}>
                   <Typography sx={{ color: '#c4bdbc', fontSize: '12px' }}>
                     {data.user.displayName}
                   </Typography>
@@ -104,9 +101,8 @@ const Message = ({ msg }) => {
                   </Typography>
                 </Box>
               </Box>
-              {/* console.log(msg.date) */}
               <Typography sx={{ color: '#141414', justifySelf: 'left', fontSize: '10px' }}>
-                {/* {convertTimestampToHHMM(msg.date.seconds, msg.date.nanoseconds)} */}
+                {convertTimestampToHHMM(msg.date.seconds, msg.date.nanoseconds)}
               </Typography>
             </Box>
           )

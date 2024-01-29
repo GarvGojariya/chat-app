@@ -3,7 +3,7 @@ import { createContext } from "react";
 import { initializeApp } from 'firebase/app';
 import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { getFirestore, collection, getDocs, query, setDoc, doc, where, serverTimestamp, getDoc, updateDoc, arrayUnion, Timestamp, orderBy, onSnapshot, } from "firebase/firestore";
+import { getFirestore, collection, getDocs, query, setDoc, doc, where, serverTimestamp, getDoc, updateDoc, arrayUnion, Timestamp, onSnapshot, } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL, getStorage } from "firebase/storage";
 import { v4 as uuid } from "uuid";
 
@@ -34,9 +34,9 @@ export const AppProvider = (props) => {
     const [chatUser, setChatUser] = useState(null)
     const [currentUser, setCurrentUser] = useState('')
     const [groupData, setGroupData] = useState([])
+    const [count, setCount] = useState(0)
     const [contextData, setContextData] = useState({ chatId: '', user: {} })
     const navigate = useNavigate()
-    //firebase authentication 
     useEffect(() => {
         const unsub = onAuthStateChanged(firebaseAuth, (user) => {
             setCurrentUser(user);
@@ -102,7 +102,6 @@ export const AppProvider = (props) => {
         } catch (err) {
             console.log('error')
         }
-        // setChatUser(null)
     }
     const selectUser = async () => {
         const combinedId =
@@ -141,6 +140,7 @@ export const AppProvider = (props) => {
             const q = query(doc(firestore, 'userChats', id));
             const unsubscribe = onSnapshot(q, (snapshot) => {
                 const chatsData = snapshot.data();
+                console.log(chatsData)
                 callback(chatsData);
             });
             return unsubscribe;
@@ -149,9 +149,43 @@ export const AppProvider = (props) => {
             return () => { };
         }
     };
+    // const updateUnread = async() => {
+    //     const id =
+    //         currentUser && currentUser.uid > userInfo.uid
+    //             ? currentUser.uid + userInfo.uid
+    //        try {
+    //         if (id === contextData.chatId) {
+    //             await updateDoc()
+    //         } else {
 
-    // console.log(data)
+    //         }
+    //     } catch (error) {
+
+    //     }
+    // }
+    const getUnreadCount = () => {
+        try {
+            const docRef = doc(firestore, 'userChats', contextData.user.displayName);
+            // Subscribe to real-time updates using onSnapshot
+            const unsubscribe = onSnapshot(docRef, (docSnapshot) => {
+                if (docSnapshot.exists()) {
+                    const fieldValue = docSnapshot.data()[contextData.chatId];
+                    const countData = fieldValue?.unreadcount || { count: 0 };
+                    const unreadCount = countData.count;
+                    console.log(unreadCount);
+                    setCount(unreadCount + 1);
+                } else {
+                    console.log('Document does not exist');
+                }
+            });
+            return unsubscribe;
+        } catch (error) {
+            console.error('Error getting document:', error);
+            return () => { }; // Return an empty function if there's an error
+        }
+    };
     const sendMessage = async (message) => {
+        getUnreadCount();
         await updateDoc(doc(firestore, "chats", contextData.chatId), {
             messages: arrayUnion({
                 id: uuid(),
@@ -172,7 +206,11 @@ export const AppProvider = (props) => {
                 message,
             },
             [contextData.chatId + ".date"]: serverTimestamp(),
+            [contextData.chatId + ".unreadcount"]: {
+                count,
+            }
         });
+        setCount(0)
     }
     const handleUserChange = (userInfo) => {
         const chatId =
@@ -185,6 +223,19 @@ export const AppProvider = (props) => {
         };
         setContextData(data);
     };
+    const updateUnread = async () => {
+        if (!contextData.chatId) {
+            return; 
+        }
+        setCount(0);
+        await updateDoc(doc(firestore, "userChats", currentUser.displayName), {
+            [contextData.chatId + ".unreadcount"]: {
+                count,
+            }
+        });
+    };
+    
+
     const getMessage = async () => {
         try {
             if (!contextData.chatId) {
@@ -198,42 +249,17 @@ export const AppProvider = (props) => {
             return [];
         }
     }
-    // const getMessage = (callback) => {
-
-    //     try {
-    //         if (!contextData.chatId) {
-    //             return []
-    //         }
-    //         const q = query(doc(firestore, 'chats', contextData.chatId));
-    //         const unsubscribe = onSnapshot(q, (snapshot) => {
-    //             const chats = snapshot.data();
-    //             callback(chats);
-    //         });
-    //         return unsubscribe;
-    //     } catch (error) {
-    //         console.error('Error getting chats:', error);
-    //         return () => { };
-    //     }
-    // };
-
     const createGroup = async (groupName, groupImage) => {
         const groupId = groupName;
-        // console.log(groupName)
-        // console.log(groupImage)
         try {
             const groupDoc = await getDoc(doc(firestore, "groupChats", groupId));
             console.log(groupDoc)
             if (!groupDoc.exists()) {
-                // Generate a unique filename for the group image
                 const date = new Date().getTime();
                 const storageRef = ref(storage, `${groupId}_${date}`);
-                // Upload group image to Firebase Storage
                 await uploadBytesResumable(storageRef, groupImage);
-                // Get download URL of the uploaded group image
                 const downloadUrl = await getDownloadURL(storageRef);
-                // Create a chat in the "groupChats" collection
                 await setDoc(doc(firestore, "groupChats", groupId), { messages: [] });
-                // Update "userGroups" for the current user with group information
                 await updateDoc(doc(firestore, "userGroups", currentUser.displayName), {
                     [groupId + ".groupInfo"]: {
                         displayName: groupName,
@@ -243,7 +269,6 @@ export const AppProvider = (props) => {
             }
         } catch (error) {
             console.error("Error during chat creation:", error);
-            // Handle specific errors and provide user-friendly messages
         }
     };
     const getGroupChats = (callback) => {
@@ -266,7 +291,6 @@ export const AppProvider = (props) => {
     };
     const getGroupMessages = async () => {
         try {
-            // Check if groupData is available
             if (!groupData.displayName) {
                 return [];
             }
@@ -307,15 +331,8 @@ export const AppProvider = (props) => {
             [groupData.displayName + ".date"]: serverTimestamp(),
         });
     }
-    const handleReadUnread = async (senderId, id) => {
-        if (senderId !== currentUser.uid) {
-            await updateDoc(doc(firestore, 'chats', id),
-                { read: true }
-            )
-        }
-    }
     return (
-        <AppContext.Provider value={{ registerWithEmailAndPassword, addGroupMembers, sendGroupMessage, getGroupMessages, groupData, handleGroupChange, getGroupChats, getMessage, createGroup, contextData, handleUserChange, sendMessage, getChats, chatUser, findUser, selectUser, loginWithEmailAndPassword, logOut, isLoggedIn, currentUser }}>
+        <AppContext.Provider value={{ registerWithEmailAndPassword, updateUnread, addGroupMembers, sendGroupMessage, getGroupMessages, groupData, handleGroupChange, getGroupChats, getMessage, createGroup, contextData, handleUserChange, sendMessage, getChats, chatUser, findUser, selectUser, loginWithEmailAndPassword, logOut, isLoggedIn, currentUser }}>
             {props.children}
         </AppContext.Provider>
     );

@@ -19,9 +19,10 @@ const Chats = () => {
     const [chats, setChats] = useState([])
     const firebase = useFirebase()
     const currentUser = firebase.currentUser
-    const handleSelect = (userInfo) => {
-        firebase.handleUserChange(userInfo)
+    const handleSelect = async (userInfo) => {
+        await firebase.handleUserChange(userInfo);
     };
+
     // useEffect(() => {
     //     firebase.getChats().then((chatsData) => {
     //         const sortedChats = Object.values(chatsData).sort((a, b) => b.date - a.date);
@@ -33,12 +34,11 @@ const Chats = () => {
             if (chatsData) {
                 const sortedChats = Object.values(chatsData).sort((a, b) => b.date - a.date);
                 setChats(sortedChats);
-                // console.log(sortedChats)
             }
         });
         return () => unsubscribe();
     }, [currentUser.uid, firebase, currentUser]);
-    
+
     return (
         <>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
@@ -58,11 +58,20 @@ const Chats = () => {
                                         {c.date && convertTimestampToHHMM(c.date.seconds, c.date.nanoseconds)}
                                     </Typography>
                                 </Box>
-                                <Typography sx={{ color: 'gray', fontSize: '12px' }}>
-                                    {c.lastMessage?.message.length > 10
-                                        ? `${c.lastMessage?.message.substring(0, 8)}...`
-                                        : c.lastMessage?.message}
-                                </Typography>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <Typography sx={{ color: 'gray', fontSize: '12px' }}>
+                                        {c.lastMessage?.message.length > 10
+                                            ? `${c.lastMessage?.message.substring(0, 8)}...`
+                                            : c.lastMessage?.message}
+                                    </Typography>
+                                    {c.unreadcount && c.unreadcount.count !== 0 && (
+                                        <Box sx={{ borderRadius: '100px', bgcolor: '#666', height: '20px', width: '20px', placeContent: 'center', display: 'flex' }}>
+                                            <Typography sx={{ color: 'whitesmoke' }}>
+                                                {c.unreadcount.count}
+                                            </Typography>
+                                        </Box>
+                                    )}
+                                </Box>
                             </Box>
                         </Box>
                     ))}
